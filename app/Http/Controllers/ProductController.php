@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Model\product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Ramsey\Collection\Collection as CollectionCollection;
 
 class ProductController extends Controller
 {
@@ -15,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return product::all();
+        return ProductCollection::Collection(product::all());
     }
 
     /**

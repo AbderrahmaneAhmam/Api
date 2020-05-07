@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/addproduct', function () {
+    if(!auth()->check())    
+        return Redirect::to('/login');
+    return view('addproduct');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+

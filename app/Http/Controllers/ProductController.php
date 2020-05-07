@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Model\product;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Ramsey\Collection\Collection as CollectionCollection;
@@ -16,9 +18,13 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {        
+        $this->middleware('auth')->except('index','show');
+    }
     public function index()
     {
-        return ProductCollection::Collection(product::all());
+        return ProductCollection::Collection(product::all());   
     }
 
     /**
@@ -37,9 +43,18 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $product = new product;
+        $product->name=$request->name;
+        $product->detail=$request->description;
+        $product->price=$request->price;
+        $product->stock=$request->stock;
+        $product->discount=$request->discount;
+        $product->save();  
+        response([
+            'data'=>new ProductResource($product)
+        ]);  
     }
 
     /**
@@ -84,6 +99,7 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
-        //
+        $product->delete();
+        return response('Product deleted',200);
     }
 }
